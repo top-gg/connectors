@@ -61,7 +61,7 @@ class PostgreSQLQueries(Queries):
             f"JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) "
             f"JOIN pg_class t ON t.oid = i.indrelid "
             f"JOIN pg_constraint c ON c.conindid = i.indexrelid "
-            f"WHERE i.indrelid = '\"{kwargs['schema']}\".\"{kwargs['table']}\"'::regclass "
+            f'WHERE i.indrelid = \'"{kwargs["schema"]}"."{kwargs["table"]}"\'::regclass '
             f"AND t.relkind = 'r' "
             f"AND c.contype = 'p' "
             f"ORDER BY array_position(i.indkey, a.attnum)"
@@ -518,6 +518,7 @@ class PostgreSQLDataSource(BaseDataSource):
                 "database": self.database,
                 "table": table,
                 "schema": self.schema,
+                "uniqueId": row.get("id"),
             }
         )
         return row
@@ -691,6 +692,7 @@ class PostgreSQLDataSource(BaseDataSource):
                 f"Skipping query {query} for tables {', '.join(tables)} as primary key column or unique ID column name is not present in query."
             )
 
+    #
     async def get_docs(self, filtering=None):
         """Executes the logic to fetch databases, tables and rows in async manner.
 
