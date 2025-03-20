@@ -47,13 +47,12 @@ def is_wildcard(tables):
     return tables in (WILDCARD, [WILDCARD])
 
 
+def to_lower_camelcase(column):
+    return column[0].lower() + column[1:]
+
+
 def map_column_names(column_names, schema=None, tables=None):
-    prefix = ""
-    if schema and len(schema.strip()) > 0:
-        prefix += schema.strip() + "_"
-    if tables and len(tables) > 0:
-        prefix += f"{'_'.join(sorted(tables))}_"
-    return [f"{prefix}{column}".lower() for column in column_names]
+    return [to_lower_camelcase(column) for column in column_names]
 
 
 def hash_id(tables, row, primary_key_columns):
